@@ -2,17 +2,18 @@ name: unittest-with-mysql
 
 on:
   push:
-    branches: '*'
+    branches:
+      - "*"
   pull_request:
-    branches: '*'
+    branches:
+      - "*"
   schedule:
-    - cron: '0 2 * * *'
+    - cron: "0 2 * * *"
 jobs:
   test:
-
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    
+
     services:
       mysql:
         image: mariadb:10.4
@@ -30,34 +31,32 @@ jobs:
         node-version: [14.x]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
 
-    - name: Cache node modules
-      uses: actions/cache@v1
-      env:
-        cache-name: cache-node-modules
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-test-mysql-${{ env.cache-name }}-${{ matrix.node-version }}-${{ hashFiles('**/package-lock.json') }}
+      - name: Cache node modules
+        uses: actions/cache@v1
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-test-mysql-${{ env.cache-name }}-${{ matrix.node-version }}-${{ hashFiles('**/package-lock.json') }}
 
-    - name: npm install
-      run: npm ci
+      - name: npm install
+        run: npm ci
 
-    - name: npm build
-      run: npm run build
+      - name: npm build
+        run: npm run build
 
-    - name: npm test
-      run: npm run test
-      env:
-        CI: true
-        MYSQL_USER: odata_test
-        MYSQL_PASSWORD: odata_test
-        MYSQL_DATABASE: odata_test
-        MYSQL_PORT: ${{ job.services.mysql.ports[3306] }}
-        DEBUG: '@odata*'
-
-
+      - name: npm test
+        run: npm run test
+        env:
+          CI: true
+          MYSQL_USER: odata_test
+          MYSQL_PASSWORD: odata_test
+          MYSQL_DATABASE: odata_test
+          MYSQL_PORT: ${{ job.services.mysql.ports[3306] }}
+          DEBUG: "@odata*"

@@ -2,46 +2,44 @@ name: unittest
 
 on:
   push:
-    branches: '*'
+    branches:
+      - "*"
   pull_request:
-    branches: '*'
+    branches:
+      - "*"
   schedule:
-    - cron: '0 2 * * *'
-    
+    - cron: "0 2 * * *"
+
 jobs:
-
   fast:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: 14.x
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
 
-    - name: Cache node modules
-      uses: actions/cache@v1
-      env:
-        cache-name: cache-node-modules
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-build-quick-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+      - name: Cache node modules
+        uses: actions/cache@v1
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-quick-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
 
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+      - run: npm run coverage
 
-    - run: npm ci
-    - run: npm run lint
-    - run: npm run build
-    - run: npm run coverage
-
-    - name: Codecov
-      uses: codecov/codecov-action@v1.0.7
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
+      - name: Codecov
+        uses: codecov/codecov-action@v1.0.7
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
 
   test:
-
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -49,24 +47,22 @@ jobs:
         node-version: [12.x, 14.x]
         os: [ubuntu-latest, windows-latest]
 
-
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
 
-    - name: Cache node modules
-      uses: actions/cache@v1
-      env:
-        cache-name: cache-node-modules
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-${{ hashFiles('**/package-lock.json') }}
+      - name: Cache node modules
+        uses: actions/cache@v1
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-${{ hashFiles('**/package-lock.json') }}
 
-
-    - run: npm ci
-    - run: npm run lint
-    - run: npm run build
-    - run: npm run test
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+      - run: npm run test

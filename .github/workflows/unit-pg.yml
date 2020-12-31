@@ -2,17 +2,18 @@ name: unittest-with-pg
 
 on:
   push:
-    branches: '*'
+    branches:
+      - "*"
   pull_request:
-    branches: '*'
+    branches:
+      - "*"
   schedule:
-    - cron: '0 2 * * *'
+    - cron: "0 2 * * *"
 jobs:
   test:
-
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    
+
     services:
       mysql:
         image: postgres
@@ -20,7 +21,7 @@ jobs:
           POSTGRES_USER: odataserver
           POSTGRES_PASSWORD: odataserver
         ports:
-        - 5432:5432
+          - 5432:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 30s
@@ -32,32 +33,32 @@ jobs:
         node-version: [14.x]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
 
-    - name: Cache node modules
-      uses: actions/cache@v1
-      env:
-        cache-name: cache-node-modules
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-test-pg-${{ env.cache-name }}-${{ matrix.node-version }}-${{ hashFiles('**/package-lock.json') }}
+      - name: Cache node modules
+        uses: actions/cache@v1
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-test-pg-${{ env.cache-name }}-${{ matrix.node-version }}-${{ hashFiles('**/package-lock.json') }}
 
-    - name: npm install
-      run: npm ci
-    
-    - name: npm build
-      run: npm run build
+      - name: npm install
+        run: npm ci
 
-    - name: npm test
-      run: npm run test
-      env:
-        CI: true
-        PG_HOST: localhost
-        PG_PORT: ${{ job.services.postgres.ports[5432] }}
-        PG_USER: odataserver
-        PG_PASSWORD: odataserver
-        DEBUG: '@odata*'
+      - name: npm build
+        run: npm run build
+
+      - name: npm test
+        run: npm run test
+        env:
+          CI: true
+          PG_HOST: localhost
+          PG_PORT: ${{ job.services.postgres.ports[5432] }}
+          PG_USER: odataserver
+          PG_PASSWORD: odataserver
+          DEBUG: "@odata*"
