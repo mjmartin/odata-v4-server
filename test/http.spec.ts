@@ -706,15 +706,6 @@ describe('OData HTTP', () => {
     });
   });
 
-  describe('Use query in service document', () => {
-    it("shuld return 'Unsupported query' error", () => request.get(`http://localhost:3002/?$expand=Any`, (err, req, res) => {
-      expect(JSON.parse(res).error.message).toEqual('Unsupported query');
-    })
-      .catch((ex) => {
-        expect(JSON.parse(ex.error).error.message).toEqual('Unsupported query');
-      }));
-  });
-
   describe('Not implemented error', () => {
     it('should return not implemented error', () => request.get(`http://localhost:3002/EntitySet`, () => {
       try {

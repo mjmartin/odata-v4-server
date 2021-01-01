@@ -11,7 +11,6 @@ import * as swaggerUi from 'swagger-ui-express';
 import { InjectKey, ServerType } from './constants';
 import { ODataController } from './controller';
 import { ContainerBase } from './edm';
-import { HttpRequestError } from './error';
 import { createMetadataJSON } from './metadata';
 import { ensureODataHeaders, withODataBatchRequestHandler, withODataErrorHandler, withODataHeader, withODataRequestHandler, withODataVersionVerify, withSwaggerDocument } from './middlewares';
 import * as odata from './odata';
@@ -222,12 +221,7 @@ export class ODataServerBase {
 
     router.use(withODataHeader);
 
-    router.get('/', ensureODataHeaders, (req, _, next) => {
-      if (typeof req.query == 'object' && Object.keys(req.query).length > 0) {
-        return next(new HttpRequestError(500, 'Unsupported query'));
-      }
-      next();
-    }, server.document().requestHandler());
+    router.get('/', ensureODataHeaders, server.document().requestHandler());
 
     router.get('/\\$metadata', server.$metadata().requestHandler());
 
