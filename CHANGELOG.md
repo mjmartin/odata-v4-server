@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.47](https://github.com/Soontao/odata-v4-server/compare/v0.2.46...v0.2.47) (2021-01-04)
+
+
+### Features
+
+* [#68](https://github.com/Soontao/odata-v4-server/issues/68) add date validate documentation ([4d01b3b](https://github.com/Soontao/odata-v4-server/commit/4d01b3b6b7678dd7c8adc13c2a7d40ddbef7f0d2))
+
 ### [0.2.46](https://github.com/Soontao/odata-v4-server/compare/v0.2.45...v0.2.46) (2020-11-04)
 
 
